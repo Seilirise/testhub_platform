@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'django_filters',
     'drf_spectacular',
+    'channels',
 ]
 
 LOCAL_APPS = [
@@ -50,6 +51,7 @@ LOCAL_APPS = [
     'apps.requirement_analysis',
     'apps.api_testing',
     'apps.ui_automation.apps.UiAutomationConfig',
+    'apps.app_automation.apps.AppAutomationConfig',  # APP自动化测试
     'apps.core',
     'apps.data_factory',
 ]
@@ -87,6 +89,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 DATABASES = {
     'default': {
@@ -129,6 +132,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+
+# 数据工厂的静态文件目录
+STATIC_FILES_URL = '/static_files/'
+STATIC_FILES_ROOT = os.path.join(BASE_DIR, 'static_files')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -220,8 +227,6 @@ if DEBUG:
         "http://127.0.0.1:3000",
         "http://localhost:8080",
         "http://127.0.0.1:8080",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
     ]
     CORS_ALLOW_CREDENTIALS = True
     # 支持EventSource (SSE) 的额外CORS头部
@@ -266,8 +271,6 @@ else:
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
 ]
 
 # Spectacular Settings
@@ -281,6 +284,26 @@ SPECTACULAR_SETTINGS = {
 # Celery Configuration
 CELERY_BROKER_URL = config('REDIS_URL', default='redis://:1234@127.0.0.1:6379/0')
 CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://:1234@127.0.0.1:6379/0')
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# Channels Configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [config('REDIS_URL', default='redis://:1234@127.0.0.1:6379/0')],
+        },
+    },
+}
+
+# Cache Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,  # 默认缓存超时5分钟
+    }
+}
 
 # Email Configuration
 EMAIL_BACKEND = 'apps.api_testing.custom_email_backend.CustomEmailBackend'
@@ -333,6 +356,7 @@ LOGGING = {
         },
     },
     'loggers': {
+        # 其他具体模块的 logger 配置
         'django': {
             'handlers': ['file', 'error_file', 'console'],
             'level': 'INFO',
@@ -348,6 +372,21 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
+        'apps.data_factory.tools.encoding_tools': {
+            'handlers': ['file', 'error_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'apps.data_factory.tools': {
+            'handlers': ['file', 'error_file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+    'root': {
+        'handlers': ['file', 'error_file', 'console'],
+        'level': 'INFO',
+        # 'propagate': True,
     },
 }
 
