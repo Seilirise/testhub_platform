@@ -1110,19 +1110,16 @@ export default {
     actionAssert: '断言',
     actionWait: '等待',
     actionSwitchTab: '切换标签页',
-    actionNavigate: '访问网址',
     selectElement: '选择元素',
     inputValue: '输入值：',
     inputPlaceholder: '请输入内容，支持变量如 \'{random_phone()}\'',
     switchTabPlaceholder: '输入索引(0,1...)或留空切换到最新',
-    navigatePlaceholder: '请输入要访问的完整网址，例如 https://example.com',
     insertVariable: '插入动态变量',
     referenceDataFactory: '引用数据工厂',
     waitTime: '等待时间（毫秒）：',
     assertType: '断言类型：',
     assertTextContains: '文本包含',
     assertTextEquals: '文本等于',
-    assertCurrentUrl: '当前网址',
     assertIsVisible: '元素可见',
     assertExists: '元素存在',
     assertHasAttribute: '属性值',
@@ -1231,9 +1228,7 @@ export default {
       scroll: '滚动',
       screenshot: '截图',
       assert: '断言',
-      wait: '等待',
-      switchTab: '切换标签页',
-      navigate: '访问网址'
+      wait: '等待'
     },
     // 操作文本（用于执行日志中显示操作描述）
     actionText: {
@@ -1245,9 +1240,7 @@ export default {
       scroll: '滚动',
       screenshot: '截图',
       assert: '断言',
-      wait: '等待',
-      switchTab: '切换标签页',
-      navigate: '访问网址'
+      wait: '等待'
     },
     // 状态文本
     status: {
@@ -1299,9 +1292,7 @@ export default {
     scroll: '滚动',
     screenshot: '截图',
     assert: '断言',
-    wait: '等待',
-    switchTab: '切换标签页',
-    navigate: '访问网址'
+    wait: '等待'
   },
 
   // 消息提示

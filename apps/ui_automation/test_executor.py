@@ -616,25 +616,6 @@ class TestExecutor:
         }
 
         try:
-            if step_data['action_type'] == 'navigate':
-                target_url = resolve_variables(step_data.get('input_value', '')).strip()
-                if not target_url:
-                    step_result['error'] = "✗ 访问网址失败: 请输入目标网址"
-                else:
-                    self.current_page.goto(target_url, wait_until='networkidle', timeout=30000)
-                    step_result['success'] = True
-                return step_result
-
-            if step_data['action_type'] == 'assert' and step_data.get('assert_type') == 'currentUrl':
-                resolved_assert_value = resolve_variables(step_data.get('assert_value', ''))
-                current_url = self.current_page.url
-                step_result['success'] = current_url == resolved_assert_value
-                if not step_result['success']:
-                    log = f"✗ 断言失败: 当前网址不等于 '{resolved_assert_value}'\n"
-                    log += f"  - 实际网址: '{current_url}'"
-                    step_result['error'] = log
-                return step_result
-
             # 获取元素定位器
             if step_data['element']:
                 element = step_data['element']
@@ -1898,25 +1879,6 @@ class TestExecutor:
         }
 
         try:
-            if step_data['action_type'] == 'navigate':
-                target_url = resolve_variables(step_data.get('input_value', '')).strip()
-                if not target_url:
-                    step_result['error'] = "✗ 访问网址失败: 请输入目标网址"
-                else:
-                    driver.get(target_url)
-                    step_result['success'] = True
-                return step_result
-
-            if step_data['action_type'] == 'assert' and step_data.get('assert_type') == 'currentUrl':
-                resolved_assert_value = resolve_variables(step_data.get('assert_value', ''))
-                current_url = driver.current_url
-                step_result['success'] = current_url == resolved_assert_value
-                if not step_result['success']:
-                    log = f"✗ 断言失败: 当前网址不等于 '{resolved_assert_value}'\n"
-                    log += f"  - 实际网址: '{current_url}'"
-                    step_result['error'] = log
-                return step_result
-
             if step_data['element']:
                 element = step_data['element']
                 locator_value = element['locator_value']

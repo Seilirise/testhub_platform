@@ -611,7 +611,6 @@ class TestCaseStep(models.Model):
         ('click', '点击'),
         ('fill', '输入文本'),
         ('getText', '获取文本'),
-        ('navigate', '访问网址'),
         ('waitFor', '等待元素'),
         ('hover', '悬停'),
         ('scroll', '滚动'),
@@ -624,7 +623,6 @@ class TestCaseStep(models.Model):
     ASSERT_TYPE_CHOICES = [
         ('textContains', '文本包含'),
         ('textEquals', '文本等于'),
-        ('currentUrl', '当前网址'),
         ('isVisible', '元素可见'),
         ('exists', '元素存在'),
         ('hasAttribute', '属性值'),
