@@ -195,6 +195,32 @@ class PlaywrightTestEngine:
                 log += f"  - 执行时间: {execution_time}秒"
                 return True, log, None
 
+            elif action_type == 'navigate':
+                target_url = (resolved_input_value or '').strip()
+                if not target_url:
+                    return False, "✗ 访问网址失败: 请输入目标网址", None
+
+                await self.page.goto(target_url, wait_until='networkidle', timeout=30000)
+                execution_time = round(time.time() - start_time, 2)
+                log = f"✓ 访问网址成功\n"
+                log += f"  - 目标网址: {target_url}\n"
+                log += f"  - 当前网址: {self.page.url}\n"
+                log += f"  - 执行时间: {execution_time}秒"
+                return True, log, None
+
+            elif action_type == 'assert' and step.assert_type == 'currentUrl':
+                current_url = self.page.url
+                if current_url == resolved_assert_value:
+                    log = f"✓ 断言通过: 当前网址等于 '{resolved_assert_value}'\n"
+                    log += f"  - 实际网址: '{current_url}'"
+                    return True, log, None
+
+                log = f"✗ 断言失败: 当前网址不等于 '{resolved_assert_value}'\n"
+                log += f"  - 实际网址: '{current_url}'"
+                screenshot = await self.page.screenshot()
+                screenshot_base64 = f"data:image/png;base64,{base64.b64encode(screenshot).decode()}"
+                return False, log, screenshot_base64
+
             # 其他操作需要元素定位器
             # 获取元素定位器
             locator_strategy = element_data.get('locator_strategy', 'css')
