@@ -417,7 +417,9 @@ const getActionText = (actionType) => {
     'scroll': t('uiAutomation.actionTypes.scroll'),
     'screenshot': t('uiAutomation.actionTypes.screenshot'),
     'assert': t('uiAutomation.actionTypes.assert'),
-    'wait': t('uiAutomation.actionTypes.wait')
+    'wait': t('uiAutomation.actionTypes.wait'),
+    'switchTab': t('uiAutomation.actionTypes.switchTab'),
+    'navigate': t('uiAutomation.actionTypes.navigate')
   }
   return actionMap[actionType] || actionType
 }

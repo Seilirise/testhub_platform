@@ -157,9 +157,10 @@
                             <el-option :label="t('uiAutomation.testCase.actionAssert')" value="assert" />
                             <el-option :label="t('uiAutomation.testCase.actionWait')" value="wait" />
                             <el-option :label="t('uiAutomation.testCase.actionSwitchTab')" value="switchTab" />
+                            <el-option :label="t('uiAutomation.testCase.actionNavigate')" value="navigate" />
                           </el-select>
                           <el-select
-                            v-if="needsElement(element.action_type)"
+                            v-if="needsElement(element)"
                             v-model="element.element_id"
                             :placeholder="t('uiAutomation.testCase.selectElement')"
                             size="small"
@@ -198,7 +199,7 @@
                           <div style="display: flex; gap: 5px; flex: 1">
                             <el-input
                               v-model="element.input_value"
-                              :placeholder="element.action_type === 'switchTab' ? t('uiAutomation.testCase.switchTabPlaceholder') : t('uiAutomation.testCase.inputPlaceholder')"
+                              :placeholder="element.action_type === 'switchTab' ? t('uiAutomation.testCase.switchTabPlaceholder') : (element.action_type === 'navigate' ? t('uiAutomation.testCase.navigatePlaceholder') : t('uiAutomation.testCase.inputPlaceholder'))"
                               size="small"
                             >
                               <template #append>
@@ -234,9 +235,10 @@
                         <!-- 断言参数 -->
                         <div v-if="element.action_type === 'assert'" class="step-param">
                           <label>{{ t('uiAutomation.testCase.assertType') }}</label>
-                          <el-select v-model="element.assert_type" size="small" style="width: 150px">
+                          <el-select v-model="element.assert_type" size="small" style="width: 150px" @change="onAssertTypeChange(element)">
                             <el-option :label="t('uiAutomation.testCase.assertTextContains')" value="textContains" />
                             <el-option :label="t('uiAutomation.testCase.assertTextEquals')" value="textEquals" />
+                            <el-option :label="t('uiAutomation.testCase.assertCurrentUrl')" value="currentUrl" />
                             <el-option :label="t('uiAutomation.testCase.assertIsVisible')" value="isVisible" />
                             <el-option :label="t('uiAutomation.testCase.assertExists')" value="exists" />
                             <el-option :label="t('uiAutomation.testCase.assertHasAttribute')" value="hasAttribute" />
@@ -683,7 +685,7 @@ const onStepsReorder = () => {
 
 const onActionTypeChange = (step) => {
   // 根据操作类型重置相关参数
-  if (step.action_type !== 'fill') {
+  if (!['fill', 'switchTab', 'navigate'].includes(step.action_type)) {
     step.input_value = ''
   }
   if (step.action_type !== 'wait') {
@@ -692,6 +694,18 @@ const onActionTypeChange = (step) => {
   if (step.action_type !== 'assert') {
     step.assert_type = 'textContains'
     step.assert_value = ''
+  }
+  if (step.action_type === 'navigate') {
+    step.element_id = ''
+  }
+  if (step.action_type === 'assert' && step.assert_type === 'currentUrl') {
+    step.element_id = ''
+  }
+}
+
+const onAssertTypeChange = (step) => {
+  if (step.assert_type === 'currentUrl') {
+    step.element_id = ''
   }
 }
 
@@ -704,15 +718,22 @@ const onElementChange = (step) => {
 }
 
 const needsInputValue = (actionType) => {
-  return ['fill', 'switchTab'].includes(actionType)
+  return ['fill', 'switchTab', 'navigate'].includes(actionType)
 }
 
 const needsWaitTime = (actionType) => {
   return ['wait', 'waitFor'].includes(actionType)
 }
 
-const needsElement = (actionType) => {
-  return !['wait', 'switchTab', 'screenshot'].includes(actionType)
+const needsElement = (step) => {
+  const actionType = step?.action_type
+  if (['wait', 'switchTab', 'screenshot', 'navigate'].includes(actionType)) {
+    return false
+  }
+  if (actionType === 'assert' && step?.assert_type === 'currentUrl') {
+    return false
+  }
+  return true
 }
 
 const expandAllSteps = () => {
@@ -1143,7 +1164,9 @@ const getActionTypeText = (actionType) => {
     'scroll': t('uiAutomation.testCase.actionType.scroll'),
     'screenshot': t('uiAutomation.testCase.actionType.screenshot'),
     'assert': t('uiAutomation.testCase.actionType.assert'),
-    'wait': t('uiAutomation.testCase.actionType.wait')
+    'wait': t('uiAutomation.testCase.actionType.wait'),
+    'switchTab': t('uiAutomation.testCase.actionType.switchTab'),
+    'navigate': t('uiAutomation.testCase.actionType.navigate')
   }
   return textMap[actionType] || actionType
 }
@@ -1165,7 +1188,9 @@ const getActionText = (actionType) => {
     'scroll': t('uiAutomation.testCase.actionText.scroll'),
     'screenshot': t('uiAutomation.testCase.actionText.screenshot'),
     'assert': t('uiAutomation.testCase.actionText.assert'),
-    'wait': t('uiAutomation.testCase.actionText.wait')
+    'wait': t('uiAutomation.testCase.actionText.wait'),
+    'switchTab': t('uiAutomation.testCase.actionText.switchTab'),
+    'navigate': t('uiAutomation.testCase.actionText.navigate')
   }
   return actionMap[actionType] || actionType
 }

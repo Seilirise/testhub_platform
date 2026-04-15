@@ -1110,16 +1110,19 @@ export default {
     actionAssert: 'Assert',
     actionWait: 'Wait',
     actionSwitchTab: 'Switch Tab',
+    actionNavigate: 'Navigate URL',
     selectElement: 'Select Element',
     inputValue: 'Input Value:',
     inputPlaceholder: 'Enter content, supports variables like \'{random_phone()}\'',
     switchTabPlaceholder: 'Enter index (0,1...) or leave empty for latest',
+    navigatePlaceholder: 'Enter full URL, e.g. https://example.com',
     insertVariable: 'Insert Dynamic Variable',
     referenceDataFactory: 'Reference Data Factory',
     waitTime: 'Wait Time (ms):',
     assertType: 'Assert Type:',
     assertTextContains: 'Text Contains',
     assertTextEquals: 'Text Equals',
+    assertCurrentUrl: 'Current URL',
     assertIsVisible: 'Element Visible',
     assertExists: 'Element Exists',
     assertHasAttribute: 'Attribute Value',
@@ -1228,7 +1231,9 @@ export default {
       scroll: 'Scroll',
       screenshot: 'Screenshot',
       assert: 'Assert',
-      wait: 'Wait'
+      wait: 'Wait',
+      switchTab: 'Switch Tab',
+      navigate: 'Navigate URL'
     },
     // Action text (for displaying action descriptions in execution logs)
     actionText: {
@@ -1240,7 +1245,9 @@ export default {
       scroll: 'Scroll',
       screenshot: 'Screenshot',
       assert: 'Assert',
-      wait: 'Wait'
+      wait: 'Wait',
+      switchTab: 'Switch Tab',
+      navigate: 'Navigate URL'
     },
     // Status text
     status: {
@@ -1292,7 +1299,9 @@ export default {
     scroll: 'Scroll',
     screenshot: 'Screenshot',
     assert: 'Assert',
-    wait: 'Wait'
+    wait: 'Wait',
+    switchTab: 'Switch Tab',
+    navigate: 'Navigate URL'
   },
 
   // Messages
